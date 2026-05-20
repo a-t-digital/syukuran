@@ -311,7 +311,7 @@
 
   <div id="loading-screen">
     <div class="spinner"></div>
-    <p style="letter-spacing: 2px; font-size: 0.9rem; text-transform: uppercase; max-width: 320px; line-height: 1.5;">Lama yah Nungguinnya<br />Kayak Nungguin Dia😁</p>
+    <p style="letter-spacing: 2px; font-size: 0.9rem; text-transform: uppercase; max-width: 320px; line-height: 1.5;">Sabar Yah<br />Lagi Loading😁</p>
   </div>
 
   <div id="bg-layer" aria-hidden="true"></div>
@@ -346,7 +346,6 @@
 
   <main id="main" class="main hidden">
     
-    <!-- HALAMAN 1 -->
     <section class="page-section">
       <header class="hero reveal-blur seq-1">
         <p class="hero-badge" id="heroBadge">Undangan Syukuran</p>
@@ -360,7 +359,6 @@
       <div class="scroll-hint reveal-blur seq-4">Scroll ke bawah ↓</div>
     </section>
 
-    <!-- HALAMAN 2 -->
     <section class="page-section">
       <article class="card details reveal-card-3d seq-1">
         <h2 id="detailsTitle" class="reveal-blur seq-2">Detail Acara</h2>
@@ -395,7 +393,6 @@
       <div class="scroll-hint reveal-blur seq-4">Scroll ke bawah ↓</div>
     </section>
 
-    <!-- HALAMAN 3 -->
     <section class="page-section">
       <article class="card reveal-card-3d seq-1">
         <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--primary-color); margin-bottom: 20px;">Kehadiran & Ucapan</h2>
@@ -421,13 +418,11 @@
         </form>
 
         <div class="wishes-container" id="wishesContainer">
-          <!-- Ucapan otomatis dimuat di sini -->
-        </div>
+          </div>
       </article>
-      <div class="scroll-hint reveal-blur seq-4">⬆️Scroll keatas⬆️</div>
+      <div class="scroll-hint reveal-blur seq-4">▲ Scroll ke atas ▲</div>
     </section>
 
-    <!-- HALAMAN 4 -->
     <section class="page-section">
       <article class="card closing reveal-card-3d seq-1">
         <p id="closing" class="reveal-blur seq-2">Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu bagi rumah baru kami. Terima kasih atas perhatiannya.</p>
@@ -454,10 +449,8 @@
   <audio id="bg-music" loop preload="auto"></audio>
 
   <script>
-    // URL API Google Apps Script milik Anda yang sudah diperbarui secara otomatis
     const SPREADSHEET_API_URL = "https://script.google.com/macros/s/AKfycbzESXx5BB43NT9qyLgmUSZSAkY9jA3xovWk2pAOWqb5B0jfkNplici6BnVd0NDVNylqjw/exec";
 
-    // Format URL Drive agar bisa dibaca langsung sebagai aset gambar web
     function formatDriveUrl(url) {
       if (!url) return "";
       const regExp = /(?:https?:\/\/)?(?:drive\.google\.com\/(?:file\/d\/|open\?id=)|lh3\.googleusercontent\.com\/d\/)([a-zA-Z0-9-_]+)/;
@@ -472,7 +465,7 @@
       const container = document.getElementById("wishesContainer");
       container.innerHTML = "";
       if(!wishesArray || wishesArray.length === 0) {
-        container.innerHTML = "<p style='font-size:0.85rem; color:var(--text-muted); font-style:italic;'>Terimah Kasih Ucapan Dan Doanya</p>";
+        container.innerHTML = "<p style='font-size:0.85rem; color:var(--text-muted); font-style:italic;'>Terima Kasih Ucapan Dan Doanya</p>";
         return;
       }
       wishesArray.forEach(item => {
@@ -508,9 +501,9 @@
       const btnSubmitRsvp = document.getElementById("btnSubmitRsvp");
 
       bgMusic.volume = 0.4;
-      const minimumTimer = new Promise(resolve => setTimeout(resolve, 1000));
 
-      const fetchData = fetch(SPREADSHEET_API_URL)
+      // Pemanggilan data langsung dieksekusi tanpa dibatasi oleh minimumTimer
+      fetch(SPREADSHEET_API_URL)
         .then(response => response.json())
         .then(data => {
           if(data.coverTitle) document.getElementById("coverTitle").textContent = data.coverTitle;
@@ -551,18 +544,23 @@
           if(data.ucapanList) {
             displayWishes(data.ucapanList);
           }
+
+          // Langsung hilangkan layar loading saat data sukses didapatkan
+          loadingScreen.style.opacity = "0";
+          setTimeout(() => {
+            loadingScreen.remove();
+            houseSvg.classList.add("house-animated");
+          }, 600);
         })
         .catch(err => {
           console.error("Gagal mengambil data dari Google Sheets:", err);
+          // Tetap hilangkan loading screen jika terjadi error agar web tidak macet total
+          loadingScreen.style.opacity = "0";
+          setTimeout(() => {
+            loadingScreen.remove();
+            houseSvg.classList.add("house-animated");
+          }, 600);
         });
-
-      Promise.all([fetchData, minimumTimer]).then(() => {
-        loadingScreen.style.opacity = "0";
-        setTimeout(() => {
-          loadingScreen.remove();
-          houseSvg.classList.add("house-animated");
-        }, 600);
-      });
 
       rsvpForm.addEventListener("submit", (e) => {
         e.preventDefault();
