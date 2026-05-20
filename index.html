@@ -502,7 +502,6 @@
 
       bgMusic.volume = 0.4;
 
-      // Pemanggilan data langsung dieksekusi tanpa dibatasi oleh minimumTimer
       fetch(SPREADSHEET_API_URL)
         .then(response => response.json())
         .then(data => {
@@ -545,7 +544,6 @@
             displayWishes(data.ucapanList);
           }
 
-          // Langsung hilangkan layar loading saat data sukses didapatkan
           loadingScreen.style.opacity = "0";
           setTimeout(() => {
             loadingScreen.remove();
@@ -554,7 +552,6 @@
         })
         .catch(err => {
           console.error("Gagal mengambil data dari Google Sheets:", err);
-          // Tetap hilangkan loading screen jika terjadi error agar web tidak macet total
           loadingScreen.style.opacity = "0";
           setTimeout(() => {
             loadingScreen.remove();
@@ -617,6 +614,7 @@
         });
       });
 
+      // MODIFIKASI DISINI: Merekam Klik & Sistem Perangkat Pengunjung
       btnOpen.addEventListener("click", () => {
         houseSvg.classList.add("door-open");
         
@@ -625,6 +623,36 @@
             musicIcon.textContent = "🎵";
           }).catch(err => console.log("Autoplay ditangguhkan:", err));
         }
+
+        // Deteksi Tipe Perangkat Dasar
+        const userAgent = navigator.userAgent;
+        let perangkat = "Tidak Diketahui";
+        
+        if (/windows phone/i.test(userAgent)) perangkat = "Windows Phone";
+        else if (/android/i.test(userAgent)) perangkat = "Android";
+        else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) perangkat = "iOS (iPhone/iPad)";
+        else if (/Macintosh/.test(userAgent)) perangkat = "Mac OS (Desktop)";
+        else if (/Windows/.test(userAgent)) perangkat = "Windows (Desktop)";
+        else if (/Linux/.test(userAgent)) perangkat = "Linux (Desktop)";
+
+        const logData = {
+          action: "logAktivitas",
+          perangkat: perangkat,
+          userAgent: userAgent,
+          screenResolution: `${window.screen.width}x${window.screen.height}`
+        };
+
+        const logBody = new URLSearchParams();
+        for (const key in logData) {
+          logBody.append(key, logData[key]);
+        }
+
+        // Kirim Log secara background ke Google Sheets Anda
+        fetch(SPREADSHEET_API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: logBody.toString()
+        }).catch(err => console.error("Gagal mengirim log:", err));
 
         setTimeout(() => {
           cover.classList.add("hidden");
