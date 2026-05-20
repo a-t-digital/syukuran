@@ -415,7 +415,7 @@
           </div>
           <div class="form-group">
             <label for="rsvpMessage">Ucapan & Doa</label>
-            <textarea id="rsvpMessage" class="form-control" rows="3" placeholder="Tulis ucapan selamat atau doa restu..." required></textarea>
+            <textarea id="rsvpMessage" class="form-control" rows="3" placeholder="Tulis ucapan selamat atau doa..." required></textarea>
           </div>
           <button type="submit" class="btn-submit" id="btnSubmitRsvp">Kirim Ucapan</button>
         </form>
@@ -424,7 +424,7 @@
           <!-- Ucapan otomatis dimuat di sini -->
         </div>
       </article>
-      <div class="scroll-hint reveal-blur seq-4">Scroll ke bawah ↓</div>
+      <div class="scroll-hint reveal-blur seq-4">⬆️Scroll keatas⬆️</div>
     </section>
 
     <!-- HALAMAN 4 -->
@@ -472,7 +472,7 @@
       const container = document.getElementById("wishesContainer");
       container.innerHTML = "";
       if(!wishesArray || wishesArray.length === 0) {
-        container.innerHTML = "<p style='font-size:0.85rem; color:var(--text-muted); font-style:italic;'>Belum ada ucapan. Jadilah yang pertama!</p>";
+        container.innerHTML = "<p style='font-size:0.85rem; color:var(--text-muted); font-style:italic;'>Terimah Kasih Ucapan Dan Doanya</p>";
         return;
       }
       wishesArray.forEach(item => {
